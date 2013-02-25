@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Accounts</title>
+    <link href="assets/style/bootstrap-combined.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-size: 24pt;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="brand" href="#">My Banks</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <h3>Banks</h3>
+
+    <div id="banks"></div>
+
+    <div>
+        <strong>Total</strong>: <span id="total"></span>
+    </div>
+
+    <div>
+        <strong>Balance of principal</strong>: <span id="principal"></span>
+    </div>
+</div>
+
+</body>
+
+<script src="assets/lib/mustache.min.js"></script>
+<script src="assets/lib/jquery.min.js"></script>
+<script src="assets/lib/bootstrap.min.js"></script>
+
+<script>
+    function getUrlOf(service) {
+        return "http://localhost:8080/" + service + "/?callback=?";
+    }
+
+    function bindService(service) {
+        $.getJSON(getUrlOf(service), function (json) {
+            $('#' + service).html(Mustache.to_html($('#template-' + service).html(), json));
+        });
+    }
+
+    bindService("banks");
+    bindService("total");
+    bindService("principal");
+</script>
+
+<script id="template-banks" type="text/template">
+    <table class="table table-striped">
+        <tr>
+            <th>Name</th>
+            <th>Balance</th>
+        </tr>
+        {{#.}}
+        <tr>
+            <td>{{name}}</td>
+            {{#balance}}<td>{{balance}}</td>{{/balance}}
+            {{#error}}<td style="color: red">{{error}}</td>{{/error}}
+        </tr>
+        {{/.}}
+    </table>
+</script>
+
+<script id="template-total" type="text/template">
+    {{#total}}{{total}}{{/total}}
+    {{#error}}<span style="color: red">{{error}}</span>{{/error}}
+</script>
+
+<script id="template-principal" type="text/template">
+    {{#balance}}{{balance}}{{/balance}}
+    {{#error}}<span style="color: red">{{error}}</span>{{/error}}
+</script>
+
+</html>
