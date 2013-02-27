@@ -43,7 +43,13 @@ package object withfuture {
     def accountByNumber(accountNumber: AccountNumber): Future[Account] = {
       val accountPromise: Promise[Account] = scala.concurrent.promise()
 
-      accountPromise.complete(Try(accounts(accountNumber)))
+      new Thread(new Runnable {
+        def run() {
+          Thread.sleep(2000)
+          println(s"... get account $accountNumber")
+          accountPromise.complete(Try(accounts(accountNumber)))
+        }
+      }).start()
 
       accountPromise.future
     }
