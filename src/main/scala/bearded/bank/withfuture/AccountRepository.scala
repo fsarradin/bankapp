@@ -19,9 +19,7 @@ class AccountRepository(private val bankProxies: Map[String, BankProxy]) {
 
   private def getBankProxy(bankName: String): Future[BankProxy] = {
     val proxyPromise: Promise[BankProxy] = promise()
-
     proxyPromise.complete(Try(proxies(bankName)))
-
     proxyPromise.future
   }
 

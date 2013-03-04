@@ -50,27 +50,27 @@ class MyHttpServer(port: Int) {
           val futureResponse: Future[(Int, String)] = httpHandler(path)
 
           futureResponse.onComplete {
-                                      case Success((responseCode, content)) => {
-                                        println(s"response: $responseCode => $content")
+            case Success((responseCode, content)) => {
+              println(s"response: $responseCode => $content")
 
-                                        val query = exchange.getRequestURI.getQuery
-                                        val body = if (query != null) {
-                                          val callback = query.split("[&=]").tail.head
-                                          callback + "(" + content + ")"
-                                        } else {
-                                          content
-                                        }
+              val query = exchange.getRequestURI.getQuery
+              val body = if (query != null) {
+                val callback = query.split("[&=]").tail.head
+                callback + "(" + content + ")"
+              } else {
+                content
+              }
 
-                                        sendData(exchange, responseCode, body)
+              sendData(exchange, responseCode, body)
 
-                                        exchange.close()
-                                      }
-                                      case Failure(e) => {
-                                        e.printStackTrace()
-                                        sendData(exchange, 500, "<html></body><h1>Server Error</h1></body></html>")
-                                        exchange.close()
-                                      }
-                                    }
+              exchange.close()
+            }
+            case Failure(e) => {
+              e.printStackTrace()
+              sendData(exchange, 500, "<html></body><h1>Server Error</h1></body></html>")
+              exchange.close()
+            }
+          }
 
         }
         catch {
