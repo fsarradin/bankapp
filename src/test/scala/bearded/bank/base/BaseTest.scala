@@ -14,7 +14,7 @@ class BaseTest extends Specification {
       bankProxy.getAccountByNumber("Number") must be equalTo account
     }
     "complain when get account with bad number" in {
-      bankProxy.getAccountByNumber("BadNumber") must throwA[BankException]
+      bankProxy.getAccountByNumber("BadNumber") must beNull[Account]
     }
   }
 
