@@ -4,6 +4,7 @@ import base.{BankProxy, AccountRepository}
 import bearded.entity.AliceProperties
 import bearded.entity.AliceProperties._
 import bearded.entity.Account
+import collection.immutable.Iterable
 
 
 class BankService(accountRepository: AccountRepository) {
@@ -16,29 +17,30 @@ class BankService(accountRepository: AccountRepository) {
   }
 
   def bankInfo: (Int, String) = {
-    var bankInfos: Array[String] = new Array[String](0)
+    val bankInfos: Iterable[String] =
+      for ((bankName, accountNumbers) <- AliceProperties.AliceAccounts)
+      yield {
+        val balances =
+          for (accountNumber <- accountNumbers)
+          yield {
+            getAccount(bankName, accountNumber).balance
+          }
 
-    for ((bankName, accountNumbers) <- AliceProperties.AliceAccounts) {
-      var balance = 0.0
-      for (accountNumber <- accountNumbers) {
-        balance += getAccount(bankName, accountNumber).balance
+        s"""{"name": "$bankName", "balance": "${balances.sum}"}"""
       }
-      bankInfos = bankInfos :+ s"""{"name": "$bankName", "balance": "$balance"}"""
-    }
 
     (200, bankInfos.mkString("[", ",", "]"))
   }
 
   def totalBalance: (Int, String) = {
-    var total = 0.0
-
-    for (bankName <- AliceProperties.AliceAccounts.keys) {
-      for (accountNumber <- AliceProperties.AliceAccounts(bankName)) {
-        total += getAccount(bankName, accountNumber).balance
+    val balances =
+      for {
+        (bankName, accountNumbers) <- AliceProperties.AliceAccounts
+        accountNumber <- accountNumbers.toList
       }
-    }
+      yield getAccount(bankName, accountNumber).balance
 
-    (200, s"""{"total": "$total"}""")
+    (200, s"""{"total": "${balances.sum}"}""")
   }
 
   private def getAccount(bankName: String, accountNumber: String) =
