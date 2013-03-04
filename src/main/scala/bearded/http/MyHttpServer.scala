@@ -3,16 +3,26 @@ package bearded.http
 import com.sun.net.httpserver.{HttpExchange, HttpHandler, HttpContext, HttpServer}
 import java.nio.charset.Charset
 import java.net.InetSocketAddress
+import concurrent._
+import concurrent.ExecutionContext.Implicits.global
+import scala.util.Success
+import scala.util.Failure
+
 
 object MyHttpServer {
   def apply(port: Int): MyHttpServer = new MyHttpServer(port)
+
+  object Implicits {
+    implicit def httpResponse2Future(response: (Int, String)): Future[(Int, String)] = future(response)
+  }
+
 }
 
 class MyHttpServer(port: Int) {
 
-  type HttpHandlerFunction = (String) => (Int, String)
+  type HttpHandlerFunction = (String) => Future[(Int, String)]
 
-  def serve(root: String)(handler: HttpHandlerFunction) = {
+  def serve(root: String)(handler: HttpHandlerFunction) {
     implicit val server = HttpServer.create(new InetSocketAddress(port), 0)
 
     contextFor("/")(handler)
@@ -34,32 +44,43 @@ class MyHttpServer(port: Int) {
         val uriPath = exchange.getRequestURI.getPath
         println(s"request path: $uriPath")
 
-        val path = uriPath.stripPrefix(contextPath).stripSuffix("/")
+        val path = uriPath.stripPrefix(contextPath).stripPrefix("/").stripSuffix("/")
 
         try {
-          val (code, content) = httpHandler(path)
+          val futureResponse: Future[(Int, String)] = httpHandler(path)
 
-          println(s"response: $code => $content")
+          futureResponse.onComplete {
+                                      case Success((responseCode, content)) => {
+                                        println(s"response: $responseCode => $content")
 
-          val query = exchange.getRequestURI.getQuery
-          val body = if (query != null) {
-            val callback = query.split("[&=]").tail.head
-            callback + "(" + content + ")"
-          } else {
-            content
-          }
+                                        val query = exchange.getRequestURI.getQuery
+                                        val body = if (query != null) {
+                                          val callback = query.split("[&=]").tail.head
+                                          callback + "(" + content + ")"
+                                        } else {
+                                          content
+                                        }
 
-          sendData(exchange, code, body)
+                                        sendData(exchange, responseCode, body)
+
+                                        exchange.close()
+                                      }
+                                      case Failure(e) => {
+                                        e.printStackTrace()
+                                        sendData(exchange, 500, "<html></body><h1>Server Error</h1></body></html>")
+                                        exchange.close()
+                                      }
+                                    }
+
         }
         catch {
           case e: Throwable => {
             e.printStackTrace()
             sendData(exchange, 500, "<html></body><h1>Server Error</h1></body></html>")
+            exchange.close()
+
             throw e
           }
-        }
-        finally {
-          exchange.close()
         }
       }
     })
