@@ -11,7 +11,7 @@ class BankService(accountRepository: AccountRepository) {
 
   def principalBalance: (Int, String) = {
     val (bankName, accountNumber) = AliceProperties.AlicePrincipal
-    val balance = getAccount(bankName, accountNumber).balance
+    val balance: Double = getAccount(bankName, accountNumber).balance
 
     (200, s"""{"balance": "$balance"}""")
   }
@@ -31,7 +31,7 @@ class BankService(accountRepository: AccountRepository) {
   }
 
   def totalBalance: (Int, String) = {
-    val balances =
+    val balances: Iterable[Double] =
       for {
         (bankName, accountNumbers) <- AliceProperties.AliceAccounts
         accountNumber <- accountNumbers.toList
