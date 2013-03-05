@@ -13,14 +13,9 @@ class AccountRepository(private val bankProxies: Map[String, BankProxy]) {
 
   def getAccount(bankName: String, accountNumber: String): Future[Account] =
     for {
-      bankProxy <- getBankProxy(bankName)
+      bankProxy <- future(proxies(bankName))
       account <- bankProxy.accountByNumber(accountNumber)
     } yield account
-
-  private def getBankProxy(bankName: String): Future[BankProxy] =
-    future {
-      proxies(bankName)
-    }
 
 }
 
