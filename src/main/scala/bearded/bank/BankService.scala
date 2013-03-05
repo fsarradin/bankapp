@@ -46,10 +46,6 @@ class BankService(accountRepository: AccountRepository) {
 
 object BankService {
 
-  def apply(): BankService = {
-    val accountRepository = AccountRepository(BankConnection.getBankAccessors)
-
-    new BankService(accountRepository)
-  }
+  def apply(): BankService = new BankService(AccountRepository(BankConnection.getBankAccessors))
 
 }
