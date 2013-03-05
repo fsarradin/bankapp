@@ -20,11 +20,9 @@ class BankService(accountRepository: AccountRepository) {
     val bankInfos: Iterable[String] =
       for ((bankName, accountNumbers) <- AliceProperties.AliceAccounts)
       yield {
-        val balances =
-          for (accountNumber <- accountNumbers)
-          yield {
-            getAccount(bankName, accountNumber).balance
-          }
+        val balances: List[Double] =
+          for (accountNumber <- accountNumbers.toList)
+          yield getAccount(bankName, accountNumber).balance
 
         s"""{"name": "$bankName", "balance": "${balances.sum}"}"""
       }
@@ -55,6 +53,7 @@ object BankService {
 
       "BGP" -> new BankProxy(Map(
         "CC-BGP-1" -> Account(Alice, 5000)
+        , "CC-BGP-2" -> Account(Alice, 5000)
         , "CC-BGP-42" -> Account(Alice, 3000)
       ))
 
