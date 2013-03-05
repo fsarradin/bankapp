@@ -38,8 +38,8 @@ class BankService(accountRepository: AccountRepository) {
     s"""{"total": "${balances.sum}"}"""
   }
 
-  private def getAccount(bankName: String, accountNumber: String) =
-    accountRepository.getAccount(bankName, accountNumber)
+
+  private def getAccount(bankName: String, accountNumber: String) = accountRepository.getAccount(bankName, accountNumber)
 
 }
 
