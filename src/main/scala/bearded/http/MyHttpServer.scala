@@ -10,7 +10,7 @@ import scala.util.Failure
 
 
 object MyHttpServer {
-  def apply(port: Int): MyHttpServer = new MyHttpServer(port)
+  def apply(port: Int, backlog: Int = 0): MyHttpServer = new MyHttpServer(port, backlog)
 
   object Implicits {
     implicit def httpResponse2Future(response: (Int, String)): Future[(Int, String)] = future(response)
@@ -19,12 +19,12 @@ object MyHttpServer {
 
 }
 
-class MyHttpServer(port: Int) {
+class MyHttpServer(port: Int, backlog: Int) {
 
   type HttpHandlerFunction = (String) => Future[(Int, String)]
 
   def serve(root: String)(handler: HttpHandlerFunction) {
-    implicit val server = HttpServer.create(new InetSocketAddress(port), 0)
+    implicit val server = HttpServer.create(new InetSocketAddress(port), backlog)
 
     contextFor("/")(handler)
 
@@ -52,7 +52,7 @@ class MyHttpServer(port: Int) {
 
           futureResponse.onComplete {
             case Success((responseCode, content)) => {
-              println(s"response: $responseCode => $content")
+              println(s"response($uriPath): $responseCode => $content")
 
               val query = exchange.getRequestURI.getQuery
               val body = if (query != null) {
