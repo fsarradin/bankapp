@@ -1,8 +1,7 @@
 package bearded.bank
 
-import base.AccountRepository
 import bearded.entity.AliceProperties
-import collection.immutable.Iterable
+import base.AccountRepository
 
 
 class BankService(accountRepository: AccountRepository) {
