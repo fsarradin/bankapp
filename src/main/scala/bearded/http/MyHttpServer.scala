@@ -14,6 +14,7 @@ object MyHttpServer {
 
   object Implicits {
     implicit def httpResponse2Future(response: (Int, String)): Future[(Int, String)] = future(response)
+    implicit def intFuture2Future(response: (Int, Future[String])): Future[(Int, String)] = response._2.map((response._1, _))
   }
 
 }

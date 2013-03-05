@@ -6,14 +6,14 @@ import base.AccountRepository
 
 class BankService(accountRepository: AccountRepository) {
 
-  def principalBalance: (Int, String) = {
+  def principalBalance: String = {
     val (bankName, accountNumber) = AliceProperties.AlicePrincipal
     val balance: Double = getAccount(bankName, accountNumber).balance
 
-    (200, s"""{"balance": "$balance"}""")
+    s"""{"balance": "$balance"}"""
   }
 
-  def balanceByBank: (Int, String) = {
+  def balanceByBank: String = {
     val balancesByBankJson: Iterable[String] =
       for ((bankName, accountNumbers) <- AliceProperties.AliceAccounts)
       yield {
@@ -24,10 +24,10 @@ class BankService(accountRepository: AccountRepository) {
         s"""{"name": "$bankName", "balance": "${balances.sum}"}"""
       }
 
-    (200, balancesByBankJson.mkString("[", ",", "]"))
+    balancesByBankJson.mkString("[", ",", "]")
   }
 
-  def totalBalance: (Int, String) = {
+  def totalBalance: String = {
     val balances: Iterable[Double] =
       for {
         (bankName, accountNumbers) <- AliceProperties.AliceAccounts
@@ -35,7 +35,7 @@ class BankService(accountRepository: AccountRepository) {
       }
       yield getAccount(bankName, accountNumber).balance
 
-    (200, s"""{"total": "${balances.sum}"}""")
+    s"""{"total": "${balances.sum}"}"""
   }
 
   private def getAccount(bankName: String, accountNumber: String) =
