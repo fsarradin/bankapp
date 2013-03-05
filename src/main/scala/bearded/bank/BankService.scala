@@ -1,9 +1,7 @@
 package bearded.bank
 
-import base.{BankProxy, AccountRepository}
+import base.AccountRepository
 import bearded.entity.AliceProperties
-import bearded.entity.AliceProperties._
-import bearded.entity.Account
 import collection.immutable.Iterable
 
 
@@ -49,23 +47,7 @@ class BankService(accountRepository: AccountRepository) {
 object BankService {
 
   def apply(): BankService = {
-    val accountRepository = new AccountRepository(Map(
-
-      "BGP" -> new BankProxy(Map(
-        "CC-BGP-1" -> Account(Alice, 5000)
-        , "CC-BGP-2" -> Account(Alice, 5000)
-        , "CC-BGP-42" -> Account(Alice, 3000)
-      ))
-
-      , "La Postale" -> new BankProxy(Map(
-        "CP-LPO-2" -> Account(Alice, 5000)
-      ))
-
-      , "Breizh Bank" -> new BankProxy(Map(
-        "CC-BRB-3" -> Account(Alice, 5000)
-      ))
-
-    ))
+    val accountRepository = AccountRepository(BankConnection.getBankAccessors)
 
     new BankService(accountRepository)
   }

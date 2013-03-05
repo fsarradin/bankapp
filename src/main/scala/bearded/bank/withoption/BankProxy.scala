@@ -1,10 +1,17 @@
 package bearded.bank.withoption
 
 import bearded.entity.Account
+import bearded.bank.BankAccessor
 
-class BankProxy(private val bankAccounts: Map[String, Account]) {
+class BankProxy(bankAccessor: BankAccessor) {
 
-  def getAccountByNumber(accountNumber: String): Option[Account] =
-    bankAccounts.get(accountNumber)
+  def getAccountByNumber(accountNumber: String): Option[Account] = {
+    val account: Account = bankAccessor.getAccountByNumber(accountNumber)
+
+    if (account == null)
+      None
+    else
+      Some(account)
+  }
 
 }

@@ -1,11 +1,11 @@
 package bearded.bank.base
 
 import bearded.entity.Account
+import bearded.bank.BankAccessor
 
-class BankProxy(private val bankAccounts: Map[String, Account]) {
+class BankProxy(bankAccessor: BankAccessor) {
 
   def getAccountByNumber(accountNumber: String): Account =
-    if (!bankAccounts.contains(accountNumber)) null
-    else bankAccounts(accountNumber)
+    bankAccessor.getAccountByNumber(accountNumber)
 
 }

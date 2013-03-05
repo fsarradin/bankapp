@@ -1,15 +1,18 @@
 package bearded.bank.withtry
 
 import bearded.entity.Account
-import util.Try
+import util.{Failure, Success, Try}
+import bearded.bank.BankAccessor
 
-class BankProxy(private val bankAccounts: Map[String, Account]) {
+class BankProxy(bankAccessor: BankAccessor) {
 
-  val accounts = bankAccounts withDefault {
-    accountNumber => throw new BankException(s"unknown account $accountNumber")
+  def accountByNumber(accountNumber: String): Try[Account] = {
+    val account: Account = bankAccessor.getAccountByNumber(accountNumber)
+
+    if (account == null)
+      Failure(new BankException(s"unknown account $accountNumber"))
+    else
+      Success(account)
   }
-
-  def accountByNumber(accountNumber: String): Try[Account] =
-    Try(accounts(accountNumber))
 
 }
