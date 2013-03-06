@@ -1,13 +1,12 @@
 package eu.alice.bankapp.bank
 
-import eu.alice.bankapp.entity.AliceProperties
 import eu.alice.bankapp.bank.base.AccountRepository
 
 
-class BankService(accountRepository: AccountRepository) {
+class BankService(accountRepository: AccountRepository, ownerPrincipal: (String, String), ownerAccounts: Map[String, Set[String]]) {
 
   def principalBalance: String = {
-    val (bankName, accountNumber) = AliceProperties.AlicePrincipal
+    val (bankName, accountNumber) = ownerPrincipal
     val balance: Double = getAccount(bankName, accountNumber).balance
 
     s"""{"balance": "$balance"}"""
@@ -15,7 +14,7 @@ class BankService(accountRepository: AccountRepository) {
 
   def balanceByBank: String = {
     val balancesByBankJson: Iterable[String] =
-      for ((bankName, accountNumbers) <- AliceProperties.AliceAccounts)
+      for ((bankName, accountNumbers) <- ownerAccounts)
       yield {
         val balances: List[Double] =
           for (accountNumber <- accountNumbers.toList)
@@ -30,7 +29,7 @@ class BankService(accountRepository: AccountRepository) {
   def totalBalance: String = {
     val balances: Iterable[Double] =
       for {
-        (bankName, accountNumbers) <- AliceProperties.AliceAccounts
+        (bankName, accountNumbers) <- ownerAccounts
         accountNumber <- accountNumbers.toList
       }
       yield getAccount(bankName, accountNumber).balance
@@ -45,6 +44,9 @@ class BankService(accountRepository: AccountRepository) {
 
 object BankService {
 
-  def apply(): BankService = new BankService(AccountRepository(BankConnection.getBankAccessors))
+  def apply(ownerPrincipal: (String, String),
+            ownerAccounts: Map[String, Set[String]],
+            bankAccessors: Map[String, BankAccessor]= BankConnection.getBankAccessors): BankService
+  = new BankService(AccountRepository(bankAccessors), ownerPrincipal, ownerAccounts)
 
 }

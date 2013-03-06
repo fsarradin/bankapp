@@ -1,6 +1,7 @@
 package eu.alice.bankapp
 
 import bank.BankService
+import entity.AliceProperties
 import http.MyHttpServer
 import http.MyHttpServer.Implicits._
 
@@ -8,7 +9,7 @@ import http.MyHttpServer.Implicits._
 object BankWebApp {
 
   def main(args: Array[String]) {
-    val bankService: BankService = BankService()
+    val bankService: BankService = BankService(AliceProperties.AlicePrincipal, AliceProperties.AliceAccounts)
 
     MyHttpServer(8080)
       .serve("/") {
