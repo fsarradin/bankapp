@@ -43,6 +43,9 @@ class BankServiceTest extends Specification {
       json must contain("balance")
       json must contain("1000")
       json must not contain ("error")
+      json must not contain ("Some")
+      json must not contain ("Try")
+      json must not contain ("Future")
     }
 
     "get balance by bank" in {
@@ -56,6 +59,9 @@ class BankServiceTest extends Specification {
       json must contain("balance")
       json must contain("1000")
       json must not contain("error")
+      json must not contain ("Some")
+      json must not contain ("Try")
+      json must not contain ("Future")
     }
 
     "get totla balance" in {
@@ -67,6 +73,9 @@ class BankServiceTest extends Specification {
       json must contain("total")
       json must contain("1000")
       json must not contain ("error")
+      json must not contain ("Some")
+      json must not contain ("Try")
+      json must not contain ("Future")
     }
 
   }
