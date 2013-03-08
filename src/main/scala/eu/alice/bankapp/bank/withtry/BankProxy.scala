@@ -1,7 +1,7 @@
 package eu.alice.bankapp.bank.withtry
 
 import util.{Failure, Success, Try}
-import eu.alice.bankapp.bank.BankAccessor
+import eu.alice.bankapp.bank.{BankException, BankAccessor}
 import eu.alice.bankapp.entity.Account
 
 class BankProxy(bankAccessor: BankAccessor) {

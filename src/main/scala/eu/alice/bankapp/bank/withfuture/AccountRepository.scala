@@ -3,7 +3,7 @@ package eu.alice.bankapp.bank.withfuture
 import concurrent._
 import concurrent.ExecutionContext.Implicits.global
 import eu.alice.bankapp.entity.Account
-import eu.alice.bankapp.bank.BankAccessor
+import eu.alice.bankapp.bank.{BankException, BankAccessor}
 
 class AccountRepository(private val bankProxies: Map[String, BankProxy]) {
 
