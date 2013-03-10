@@ -56,7 +56,7 @@ class BankService(accountRepository: AccountRepository, ownerPrincipal: (String,
         if (accounts == null) s"""{"name": "$bankName", "error": "unknown bank name or account number"}"""
         else {
           val balances = accounts.map(_.balance)
-          s"""{"name": "$bankName", "balance": "$balances"}"""
+          s"""{"name": "$bankName", "balance": "${balances.sum}"}"""
         }
       }
 
