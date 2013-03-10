@@ -9,8 +9,6 @@ class BankProxy(bankAccessor: BankAccessor) {
 
   def accountByNumber(accountNumber: String): Future[Account] =
     future {
-      Thread.sleep(2000)
-
       val account: Account = bankAccessor.getAccountByNumber(accountNumber)
 
       if (account == null)

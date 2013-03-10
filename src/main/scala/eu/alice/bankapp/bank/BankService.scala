@@ -1,6 +1,7 @@
 package eu.alice.bankapp.bank
 
 import eu.alice.bankapp.bank.base.AccountRepository
+import eu.alice.bankapp.entity.Account
 
 
 class BankService(accountRepository: AccountRepository, ownerPrincipal: (String, String), ownerAccounts: Map[String, Set[String]]) {
@@ -12,9 +13,11 @@ class BankService(accountRepository: AccountRepository, ownerPrincipal: (String,
 
   def principalBalance: String = {
     val (bankName, accountNumber) = ownerPrincipal
-    val balance: Double = getAccount(bankName, accountNumber).balance
+    val account: Account = getAccount(bankName, accountNumber)
 
-    s"""{"balance": "$balance"}"""
+    if (account == null) s"""{"error": "unknown bank name or account number"}"""
+    else s"""{"balance": "${account.balance}"}"""
+
   }
 
 
@@ -24,14 +27,18 @@ class BankService(accountRepository: AccountRepository, ownerPrincipal: (String,
    */
 
   def totalBalance: String = {
-    val balances: Iterable[Double] =
+    val accounts: Iterable[Account] =
       for {
         (bankName, accountNumbers) <- ownerAccounts
         accountNumber <- accountNumbers.toList
       }
-      yield getAccount(bankName, accountNumber).balance
+      yield getAccount(bankName, accountNumber)
 
-    s"""{"total": "${balances.sum}"}"""
+    if (accounts.toList.contains(null)) s"""{"error": "unknown bank name or account number"}"""
+    else {
+      val balances = accounts.map(_.balance)
+      s"""{"total": "${balances.sum}"}"""
+    }
   }
 
 
@@ -43,20 +50,29 @@ class BankService(accountRepository: AccountRepository, ownerPrincipal: (String,
   def balanceByBank: String = {
     val balancesByBankJson: Iterable[String] =
       for (bankName <- ownerAccounts.keys)
-      yield totalBalanceFor(bankName)
+      yield {
+        val accounts: List[Account] = accountsFor(bankName)
+
+        if (accounts == null) s"""{"name": "$bankName", "error": "unknown bank name or account number"}"""
+        else {
+          val balances = accounts.map(_.balance)
+          s"""{"name": "$bankName", "balance": "$balances"}"""
+        }
+      }
 
     balancesByBankJson.mkString("[", ",", "]")
   }
 
-  def totalBalanceFor(bankName: String): String = {
-    val balances: List[Double] =
+  def accountsFor(bankName: String): List[Account] = {
+    val accounts: List[Account] =
       for {
         accountNumbers <- ownerAccounts.get(bankName).toList
         accountNumber <- accountNumbers
       }
-      yield getAccount(bankName, accountNumber).balance
+      yield getAccount(bankName, accountNumber)
 
-    s"""{"name": "$bankName", "balance": "${balances.sum}"}"""
+    if (accounts.contains(null)) null
+    else accounts
   }
 
 
