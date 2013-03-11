@@ -13,9 +13,7 @@ object BankWebApp {
 
     MyHttpServer(8080)
       .serve("/") {
-      case "banks" => (200, bankService.balanceByBank)
       case "total" => (200, bankService.totalBalance)
-      case "principal" => (200, bankService.principalBalance)
 
       case badPath => (404, badPath + " Not Found")
     }

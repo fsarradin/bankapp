@@ -7,21 +7,6 @@ import eu.alice.bankapp.entity.Account
 class BankService(accountRepository: AccountRepository, ownerPrincipal: (String, String), ownerAccounts: Map[String, Set[String]]) {
 
   /*
-   * PRINCIPAL BALANCE
-   *
-   */
-
-  def principalBalance: String = {
-    val (bankName, accountNumber) = ownerPrincipal
-    val account: Account = getAccount(bankName, accountNumber)
-
-    if (account == null) s"""{"error": "unknown bank name or account number"}"""
-    else s"""{"balance": "${account.balance}"}"""
-
-  }
-
-
-  /*
    * TOTAL BALANCE
    *
    */
@@ -39,40 +24,6 @@ class BankService(accountRepository: AccountRepository, ownerPrincipal: (String,
       val balances = accounts.map(_.balance)
       s"""{"total": "${balances.sum}"}"""
     }
-  }
-
-
-  /*
-   * BALANCE BY BANK
-   *
-   */
-
-  def balanceByBank: String = {
-    val balancesByBankJson: Iterable[String] =
-      for (bankName <- ownerAccounts.keys)
-      yield {
-        val accounts: List[Account] = accountsFor(bankName)
-
-        if (accounts == null) s"""{"name": "$bankName", "error": "unknown bank name or account number"}"""
-        else {
-          val balances = accounts.map(_.balance)
-          s"""{"name": "$bankName", "balance": "${balances.sum}"}"""
-        }
-      }
-
-    balancesByBankJson.mkString("[", ",", "]")
-  }
-
-  def accountsFor(bankName: String): List[Account] = {
-    val accounts: List[Account] =
-      for {
-        accountNumbers <- ownerAccounts.get(bankName).toList
-        accountNumber <- accountNumbers
-      }
-      yield getAccount(bankName, accountNumber)
-
-    if (accounts.contains(null)) null
-    else accounts
   }
 
 

@@ -23,16 +23,8 @@
 </div>
 
 <div class="container">
-    <h3>Banks</h3>
-
-    <div id="banks"></div>
-
     <div>
-        <strong>Total</strong>: <span id="total"></span>
-    </div>
-
-    <div>
-        <strong>Balance of principal</strong>: <span id="principal"></span>
+        <strong>Total balance</strong>: <span id="total"></span>
     </div>
 </div>
 
@@ -53,34 +45,11 @@
         });
     }
 
-    bindService("banks");
     bindService("total");
-    bindService("principal");
-</script>
-
-<script id="template-banks" type="text/template">
-    <table class="table table-striped">
-        <tr>
-            <th>Name</th>
-            <th>Balance</th>
-        </tr>
-        {{#.}}
-        <tr>
-            <td>{{name}}</td>
-            {{#balance}}<td>{{balance}}</td>{{/balance}}
-            {{#error}}<td style="color: red">{{error}}</td>{{/error}}
-        </tr>
-        {{/.}}
-    </table>
 </script>
 
 <script id="template-total" type="text/template">
     {{#total}}{{total}}{{/total}}
-    {{#error}}<span style="color: red">{{error}}</span>{{/error}}
-</script>
-
-<script id="template-principal" type="text/template">
-    {{#balance}}{{balance}}{{/balance}}
     {{#error}}<span style="color: red">{{error}}</span>{{/error}}
 </script>
 
