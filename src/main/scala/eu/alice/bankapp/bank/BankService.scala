@@ -1,7 +1,6 @@
 package eu.alice.bankapp.bank
 
 import eu.alice.bankapp.bank.base.AccountRepository
-import collection.immutable.Iterable
 
 
 class BankService(accountRepository: AccountRepository, ownerAccounts: Map[String, Set[String]]) {
@@ -19,8 +18,10 @@ class BankService(accountRepository: AccountRepository, ownerAccounts: Map[Strin
       }
       yield getAccount(bankName, accountNumber).balance
 
-    if (balances.toList.contains(null)) s"""{"error": "unknown bank name or account number"}"""
-    else s"""{"total": "${balances.sum}"}"""
+    if (balances.toList.contains(null))
+      s"""{"error": "unknown bank name or account number"}"""
+    else
+      s"""{"total": "${balances.sum}"}"""
   }
 
 
@@ -29,7 +30,8 @@ class BankService(accountRepository: AccountRepository, ownerAccounts: Map[Strin
    *
    */
 
-  private def getAccount(bankName: String, accountNumber: String) = accountRepository.getAccount(bankName, accountNumber)
+  private def getAccount(bankName: String, accountNumber: String)=
+    accountRepository.getAccount(bankName, accountNumber)
 
 }
 

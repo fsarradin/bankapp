@@ -4,16 +4,62 @@
 <head>
     <title>Accounts</title>
     <link href="assets/style/bootstrap-combined.min.css" rel="stylesheet">
+    <link href="assets/lib/clock/jqClock.css" rel="stylesheet">
 
     <style>
         body {
             font-size: 24pt;
             line-height: 1.5;
         }
+
+        .clock {
+            height: 250px;
+            padding-left: 250px;
+        }
+
+        .clock .jqc-clock-face {
+            background: url("assets/lib/clock/paris.png") no-repeat scroll 0 0 transparent;
+        }
+
+        .jqc-clock-sec span {
+            background: url("assets/lib/clock/seconds.png") no-repeat scroll 0 0 transparent;
+            box-shadow: 0 0;
+            height: 106px;
+            margin-top: 36px;
+            width: 4px;
+        }
+
+        .jqc-clock-min span {
+            background: url("assets/lib/clock/minutes.png") no-repeat scroll 0 0 transparent;
+            box-shadow: 0 0;
+            height: 106px;
+            margin-top: 51px;
+            width: 6px;
+        }
+
+        .jqc-clock-hour span {
+            background: url("assets/lib/clock/hours.png") no-repeat scroll 0 0 transparent;
+            box-shadow: 0 0;
+            height: 106px;
+            margin-top: 69px;
+            width: 10px;
+        }
+
     </style>
+
+    <script src="assets/lib/mustache.min.js"></script>
+    <script src="assets/lib/jquery.min.js"></script>
+    <script src="assets/lib/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="assets/lib/ponies/basecfg.js" id="browser-ponies-config"></script>
+    <script type="text/javascript" src="assets/lib/ponies/browserponies.js" id="browser-ponies-script"></script>
+
+    <script type="text/javascript" src="assets/lib/clock/jqClock.js"></script>
+
 </head>
 
 <body>
+
 <div class="navbar">
     <div class="navbar-inner">
         <div class="container">
@@ -28,14 +74,13 @@
     </div>
 </div>
 
+<div>
+    <span id="clock1" class="clock">&nbsp;</span>
+    <span id="clock2" class="clock">&nbsp;</span>
+    <span id="clock3" class="clock">&nbsp;</span>
+</div>
+
 </body>
-
-<script src="assets/lib/mustache.min.js"></script>
-<script src="assets/lib/jquery.min.js"></script>
-<script src="assets/lib/bootstrap.min.js"></script>
-
-<script type="text/javascript" src="assets/lib/ponies/basecfg.js" id="browser-ponies-config"></script>
-<script type="text/javascript" src="assets/lib/ponies/browserponies.js" id="browser-ponies-script"></script>
 
 <script>
     function getUrlOf(service) {
@@ -48,21 +93,48 @@
             BrowserPonies.loadConfig(BrowserPoniesBaseConfig);
             BrowserPonies.loadConfig(cfg);
         })({
-            "baseurl":"/Users/fsarradin/src/bankapp/public/assets/lib/ponies/",
-            "fadeDuration":500,"volume":1,"fps":25,"speed":3,"audioEnabled":false,"showFps":false,"showLoadProgress":true,"speakProbability":0.1,
-            "spawn":{"applejack":1,"fluttershy":1,"pinkie pie":1,"rainbow dash":1,"rarity":1,"twilight sparkle":1},
-            "autostart":true});
+            "baseurl": "/Users/fsarradin/src/bankapp/public/assets/lib/ponies/",
+            "fadeDuration": 500, "volume": 1, "fps": 25, "speed": 3, "audioEnabled": false, "showFps": false,
+            "showLoadProgress": true, "speakProbability": 0.1,
+            "spawn": {"applejack": 1, "fluttershy": 1, "pinkie pie": 1, "rainbow dash": 1, "rarity": 1, "twilight sparkle": 1},
+            "autostart": true});
     }
 
     function bindService(service) {
+        var startDate = new Date();
+
         $.getJSON(getUrlOf(service), function (json) {
             $('#' + service).html(Mustache.to_html($('#template-' + service).html(), json));
+            var endDate = new Date();
             if (json.hasOwnProperty("error")) {
                 var error = json.error;
-                if ((error.indexOf("bank name") > 0) && (error.indexOf("account number") > 0)) {
+                if (error.indexOf("#") < 0) {
                     setTimeout(launchPonies, 3000);
                 }
+                else if ((endDate.getTime() - startDate.getTime()) > 2000) {
+                    setTimeout(showClocks, 3000);
+                }
             }
+        });
+    }
+
+    function showClocks() {
+        jQuery(function () {
+            jQuery('#clock1').clock({
+                graduations: 0,
+                size: 250,
+                speed: 500
+            });
+            jQuery('#clock2').clock({
+                graduations: 0,
+                size: 250,
+                speed: 2000
+            });
+            jQuery('#clock3').clock({
+                graduations: 0,
+                size: 250,
+                speed: 100
+            });
         });
     }
 
