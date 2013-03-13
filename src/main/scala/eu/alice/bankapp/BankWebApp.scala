@@ -9,7 +9,7 @@ import http.MyHttpServer.Implicits._
 object BankWebApp {
 
   def main(args: Array[String]) {
-    val bankService: BankService = BankService(AliceProperties.AlicePrincipal, AliceProperties.AliceAccounts)
+    val bankService: BankService = BankService(AliceProperties.AliceAccounts)
 
     MyHttpServer(8080)
       .serve("/") {

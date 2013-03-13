@@ -8,21 +8,9 @@ import concurrent.ExecutionContext.Implicits.global
 
 class BankServiceTest extends Specification {
 
-  val (principalBank, principalAccount): (String, String) = ("PrincipalBank", "PrincipalNumber")
-
-  val bankServiceWithPrincipal: BankService = BankService((principalBank, principalAccount),
+  val bankService: BankService = BankService(
     Map(
-      principalBank -> Set(principalAccount)
-    ),
-    Map(
-      principalBank -> new BankAccessor(Map(
-        principalAccount -> Account("Owner", 1000.0)
-      ))
-    ))
-
-  val bankServiceWithoutPrincipal: BankService = BankService((principalBank, principalAccount),
-    Map(
-      principalBank -> Set(principalAccount)
+      "Bank" -> Set("Number")
     ),
     Map(
       "Bank" -> new BankAccessor(Map(
@@ -32,10 +20,10 @@ class BankServiceTest extends Specification {
 
   implicit def stringToFuture(s: String): Future[String] = future(s)
 
-  "bank service with principal" should {
+  "a bank" should {
 
     "get total balance" in {
-      val jsonFuture: Future[String] = bankServiceWithPrincipal.totalBalance
+      val jsonFuture: Future[String] = bankService.totalBalance
       Await.ready(jsonFuture, 5000 milli)
 
       val json: String = jsonFuture.value.get.get
@@ -46,21 +34,6 @@ class BankServiceTest extends Specification {
       json must not contain ("Some")
       json must not contain ("Try")
       json must not contain ("Future")
-    }
-
-  }
-
-  "bank service without principal" should {
-
-    "not get total balance" in {
-      val jsonFuture: Future[String] = bankServiceWithoutPrincipal.totalBalance
-      Await.ready(jsonFuture, 5000 milli)
-
-      val json: String = jsonFuture.value.get.get
-
-      json must not contain("total")
-      json must not contain("1000")
-      json must contain ("error")
     }
 
   }

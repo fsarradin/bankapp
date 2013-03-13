@@ -1,10 +1,10 @@
 package eu.alice.bankapp.bank
 
 import eu.alice.bankapp.bank.base.AccountRepository
-import eu.alice.bankapp.entity.Account
+import collection.immutable.Iterable
 
 
-class BankService(accountRepository: AccountRepository, ownerPrincipal: (String, String), ownerAccounts: Map[String, Set[String]]) {
+class BankService(accountRepository: AccountRepository, ownerAccounts: Map[String, Set[String]]) {
 
   /*
    * TOTAL BALANCE
@@ -12,18 +12,15 @@ class BankService(accountRepository: AccountRepository, ownerPrincipal: (String,
    */
 
   def totalBalance: String = {
-    val accounts: Iterable[Account] =
+    val balances: Iterable[Double] =
       for {
         (bankName, accountNumbers) <- ownerAccounts
         accountNumber <- accountNumbers.toList
       }
-      yield getAccount(bankName, accountNumber)
+      yield getAccount(bankName, accountNumber).balance
 
-    if (accounts.toList.contains(null)) s"""{"error": "unknown bank name or account number"}"""
-    else {
-      val balances = accounts.map(_.balance)
-      s"""{"total": "${balances.sum}"}"""
-    }
+    if (balances.toList.contains(null)) s"""{"error": "unknown bank name or account number"}"""
+    else s"""{"total": "${balances.sum}"}"""
   }
 
 
@@ -38,9 +35,8 @@ class BankService(accountRepository: AccountRepository, ownerPrincipal: (String,
 
 object BankService {
 
-  def apply(ownerPrincipal: (String, String),
-            ownerAccounts: Map[String, Set[String]],
+  def apply(ownerAccounts: Map[String, Set[String]],
             bankAccessors: Map[String, BankAccessor] = BankConnection.getBankAccessors): BankService
-  = new BankService(AccountRepository(bankAccessors), ownerPrincipal, ownerAccounts)
+  = new BankService(AccountRepository(bankAccessors), ownerAccounts)
 
 }
