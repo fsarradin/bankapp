@@ -30,8 +30,8 @@ class BankService(accountRepository: AccountRepository, ownerAccounts: Map[Strin
   }
 
 
-  def addBalances(balance1: Double, balance2: Double) =
-    if (balance1 == null || balance2 == null) null
+  def addBalances(balance1: Double, balance2: Double): Double =
+    if (balance1 == null || balance2 == null) null.asInstanceOf[Double]
     else balance1 + balance2
 
 
