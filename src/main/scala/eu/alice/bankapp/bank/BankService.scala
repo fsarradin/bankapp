@@ -18,11 +18,18 @@ class BankService(accountRepository: AccountRepository, ownerAccounts: Map[Strin
       }
       yield getAccount(bankName, accountNumber).balance
 
-    if (balances.toList.contains(null))
-      s"""{"error": "unknown bank name or account number"}"""
+    val sum: Any = balances.reduce((subTotal, balance) => addBalances(subTotal, balance))
+
+    if (sum != null)
+      s"""{"total": "$sum"}"""
     else
-      s"""{"total": "${balances.sum}"}"""
+      s"""{"error": "unknown bank name or account number"}"""
   }
+
+
+  def addBalances(v1: Double, v2: Double) =
+    if (v1 == null || v2 == null) null
+    else v1 + v2
 
 
   /*
@@ -30,7 +37,7 @@ class BankService(accountRepository: AccountRepository, ownerAccounts: Map[Strin
    *
    */
 
-  private def getAccount(bankName: String, accountNumber: String)=
+  private def getAccount(bankName: String, accountNumber: String) =
     accountRepository.getAccount(bankName, accountNumber)
 
 }
