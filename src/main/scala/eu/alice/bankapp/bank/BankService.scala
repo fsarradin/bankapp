@@ -20,11 +20,13 @@ class BankService(accountRepository: AccountRepository, ownerAccounts: Map[Strin
       yield getAccount(bankName, accountNumber).balance
 
     // compute the total balance
-    val totalBalance: Any = balances.reduce((subTotal, balance) => addBalances(subTotal, balance))
+    val total: Any = balances.reduce(
+      (subTotal, balance) => addBalances(subTotal, balance)
+    )
 
     // manage error and build JSON response
-    if (totalBalance != null)
-      s"""{"total": "$totalBalance"}"""
+    if (total != null)
+      s"""{"total": "$total"}"""
     else
       s"""{"error": "unknown bank name or account number"}"""
   }
