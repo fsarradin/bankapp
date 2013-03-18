@@ -1,8 +1,5 @@
 package eu.alice.bankapp.bank
 
-import eu.alice.bankapp.bank.base.AccountRepository
-import collection.immutable.Iterable
-
 
 class BankService(accountRepository: AccountRepository, ownerAccounts: Map[String, List[String]]) {
 
@@ -26,7 +23,7 @@ class BankService(accountRepository: AccountRepository, ownerAccounts: Map[Strin
     )
 
     // build JSON response
-      s"""{"total": "$total"}"""
+    s"""{"total": "$total"}"""
   }
 
 
