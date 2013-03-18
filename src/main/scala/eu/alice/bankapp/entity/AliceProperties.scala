@@ -4,10 +4,10 @@ object AliceProperties {
 
   val Alice = "Alice"
 
-  val AliceAccounts: Map[String, Set[String]] = Map(
-    "BGP" -> Set("CC-BGP-1", "#CC-BGP-2", "CC-BGP-42")
-    , "La Postale" -> Set("CP-LPO-2")
-    , "#Breizh Bank" -> Set("CC-BRB-3")
+  val AliceAccounts: Map[String, List[String]] = Map(
+    "BGP" -> List("CC-BGP-1", "#CC-BGP-2", "CC-BGP-42")
+    , "La Postale" -> List("CP-LPO-2")
+    , "#Breizh Bank" -> List("CC-BRB-3")
   )
 
 }

@@ -10,7 +10,7 @@ class BankServiceTest extends Specification {
 
   val bankService: BankService = BankService(
     Map(
-      "Bank" -> Set("Number")
+      "Bank" -> List("Number")
     ),
     Map(
       "Bank" -> new BankAccessor(Map(

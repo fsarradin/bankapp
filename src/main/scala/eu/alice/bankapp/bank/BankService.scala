@@ -1,9 +1,10 @@
 package eu.alice.bankapp.bank
 
 import eu.alice.bankapp.bank.base.AccountRepository
+import collection.immutable.Iterable
 
 
-class BankService(accountRepository: AccountRepository, ownerAccounts: Map[String, Set[String]]) {
+class BankService(accountRepository: AccountRepository, ownerAccounts: Map[String, List[String]]) {
 
   /*
    * TOTAL BALANCE
@@ -15,7 +16,7 @@ class BankService(accountRepository: AccountRepository, ownerAccounts: Map[Strin
     val balances: Iterable[Double] =
       for {
         (bankName, accountNumbers) <- ownerAccounts
-        accountNumber <- accountNumbers.toList
+        accountNumber <- accountNumbers
       }
       yield getAccount(bankName, accountNumber).balance
 
@@ -49,7 +50,7 @@ class BankService(accountRepository: AccountRepository, ownerAccounts: Map[Strin
 
 object BankService {
 
-  def apply(ownerAccounts: Map[String, Set[String]],
+  def apply(ownerAccounts: Map[String, List[String]],
             bankAccessors: Map[String, BankAccessor] = BankConnection.getBankAccessors): BankService
   = new BankService(AccountRepository(bankAccessors), ownerAccounts)
 
