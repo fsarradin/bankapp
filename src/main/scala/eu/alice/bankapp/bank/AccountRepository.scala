@@ -2,27 +2,27 @@ package eu.alice.bankapp.bank
 
 import eu.alice.bankapp.entity.Account
 
-class AccountRepository(bankAccessors: Map[String, BankAccessor]) {
+class AccountRepository(bankProxies: Map[String, BankProxy]) {
 
   def getAccount(bankName: String, accountNumber: String): Account =
   {
-    val bankAccessor: BankAccessor = getBankAccessor(bankName)
-    val account: Account = getAccountByNumber(bankAccessor, accountNumber)
+    val bankProxy: BankProxy = getBankProxy(bankName)
+    val account: Account = getAccountByNumber(bankProxy, accountNumber)
     account
   }
 
 
-  def getBankAccessor(bankName: String): BankAccessor =
+  def getBankProxy(bankName: String): BankProxy =
   {
-    if (!bankAccessors.contains(bankName))
+    if (!bankProxies.contains(bankName))
       throw new BankException(s"unknown bank name $bankName")
     else
-      bankAccessors(bankName)
+      bankProxies(bankName)
   }
 
-  def getAccountByNumber(bankAccessor: BankAccessor, accountNumber: String): Account =
+  def getAccountByNumber(bankProxy: BankProxy, accountNumber: String): Account =
   {
-    val account: Account = bankAccessor.getAccountByNumber(accountNumber)
+    val account: Account = bankProxy.getAccountByNumber(accountNumber)
 
     if (account == null)
       throw new BankException(s"unknown account number $accountNumber")
@@ -34,5 +34,5 @@ class AccountRepository(bankAccessors: Map[String, BankAccessor]) {
 }
 
 object AccountRepository {
-  def apply(accessors: Map[String, BankAccessor]): AccountRepository = new AccountRepository(accessors)
+  def apply(accessors: Map[String, BankProxy]): AccountRepository = new AccountRepository(accessors)
 }

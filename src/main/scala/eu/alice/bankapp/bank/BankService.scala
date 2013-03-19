@@ -1,11 +1,12 @@
 package eu.alice.bankapp.bank
 
 import eu.alice.bankapp.entity.Account
+import collection.immutable.Iterable
 
 
 class BankService(accountRepository: AccountRepository, ownerAccounts: Map[String, List[String]]) {
 
-  type Balance = Double
+  type Balance = BigDecimal
 
   /*
    * TOTAL BALANCE
@@ -41,7 +42,7 @@ class BankService(accountRepository: AccountRepository, ownerAccounts: Map[Strin
 object BankService {
 
   def apply(ownerAccounts: Map[String, List[String]],
-            bankAccessors: Map[String, BankAccessor] = BankConnection.getBankAccessors): BankService
+            bankAccessors: Map[String, BankProxy] = BankConnection.getBankAccessors): BankService
   = new BankService(AccountRepository(bankAccessors), ownerAccounts)
 
 }

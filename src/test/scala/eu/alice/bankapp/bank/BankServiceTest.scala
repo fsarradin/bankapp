@@ -13,7 +13,7 @@ class BankServiceTest extends Specification {
       "Bank" -> List("Number")
     ),
     Map(
-      "Bank" -> new BankAccessor(Map(
+      "Bank" -> new BankProxy(Map(
         "Number" -> Account("Owner", 1000.0)
       ))
     ))

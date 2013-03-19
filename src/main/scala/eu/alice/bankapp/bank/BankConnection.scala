@@ -6,19 +6,19 @@ import eu.alice.bankapp.entity.Account
 
 object BankConnection {
 
-  def getBankAccessors: Map[String, BankAccessor] = Map(
+  def getBankAccessors: Map[String, BankProxy] = Map(
 
-    "BGP" -> new BankAccessor(Map(
+    "BGP" -> new BankProxy(Map(
       "CC-BGP-1" -> Account(Alice, 5000)
       , "CC-BGP-2" -> Account(Alice, 5000)
       , "CC-BGP-42" -> Account(Alice, 3000)
     ))
 
-    , "La Postale" -> new BankAccessor(Map(
+    , "La Postale" -> new BankProxy(Map(
       "CP-LPO-2" -> Account(Alice, 5000)
     ))
 
-    , "Breizh Bank" -> new BankAccessor(Map(
+    , "Breizh Bank" -> new BankProxy(Map(
       "CC-BRB-3" -> Account(Alice, 5000)
     ))
 
