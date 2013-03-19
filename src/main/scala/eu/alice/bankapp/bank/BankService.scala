@@ -5,6 +5,8 @@ import eu.alice.bankapp.entity.Account
 
 class BankService(accountRepository: AccountRepository, ownerAccounts: Map[String, List[String]]) {
 
+  type Balance = Double
+
   /*
    * TOTAL BALANCE
    *
@@ -12,7 +14,7 @@ class BankService(accountRepository: AccountRepository, ownerAccounts: Map[Strin
 
   def totalBalance: String = {
     // get all balances
-    val balances: Iterable[Double] =
+    val balances: Iterable[Balance] =
       for {
         (bankName, accountNumbers) <- ownerAccounts
         accountNumber <- accountNumbers
@@ -23,7 +25,7 @@ class BankService(accountRepository: AccountRepository, ownerAccounts: Map[Strin
       }
 
     // compute the total balance
-    val total: Double = balances.reduce(
+    val total: Balance = balances.reduce(
       (subTotal, balance) => addBalances(subTotal, balance)
     )
 
@@ -32,7 +34,7 @@ class BankService(accountRepository: AccountRepository, ownerAccounts: Map[Strin
   }
 
 
-  def addBalances(balance1: Double, balance2: Double): Double = balance1 + balance2
+  def addBalances(balance1: Balance, balance2: Balance): Balance = balance1 + balance2
 
 }
 
