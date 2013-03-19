@@ -1,5 +1,7 @@
 package eu.alice.bankapp.bank
 
+import eu.alice.bankapp.entity.Account
+
 
 class BankService(accountRepository: AccountRepository, ownerAccounts: Map[String, List[String]]) {
 
@@ -15,7 +17,10 @@ class BankService(accountRepository: AccountRepository, ownerAccounts: Map[Strin
         (bankName, accountNumbers) <- ownerAccounts
         accountNumber <- accountNumbers
       }
-      yield accountRepository.getAccount(bankName, accountNumber).balance
+      yield {
+        val account: Account = accountRepository.getAccount(bankName, accountNumber)
+        account.balance
+      }
 
     // compute the total balance
     val total: Double = balances.reduce(
