@@ -70,8 +70,9 @@ class MyHttpServer(port: Int, backlog: Int) {
               exchange.close()
             }
             case Failure(e) => {
+              println(s"response($uriPath): 500")
               e.printStackTrace()
-              sendData(exchange, 500, "<html></body><h1>Server Error</h1></body></html>")
+              sendData(exchange, 500, """{ "error": "Server Error" }""")
               exchange.close()
             }
           }
@@ -79,8 +80,9 @@ class MyHttpServer(port: Int, backlog: Int) {
         }
         catch {
           case e: Throwable => {
+            println(s"response($uriPath): 500")
             e.printStackTrace()
-            sendData(exchange, 500, "<html></body><h1>Server Error</h1></body></html>")
+            sendData(exchange, 500, """{ "error": "Server Error" }""")
             exchange.close()
 
             throw e
