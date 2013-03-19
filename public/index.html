@@ -11,40 +11,6 @@
             font-size: 24pt;
             line-height: 1.5;
         }
-
-        .clock {
-            height: 250px;
-            padding-left: 250px;
-        }
-
-        .clock .jqc-clock-face {
-            background: url("assets/lib/clock/paris.png") no-repeat scroll 0 0 transparent;
-        }
-
-        .jqc-clock-sec span {
-            background: url("assets/lib/clock/seconds.png") no-repeat scroll 0 0 transparent;
-            box-shadow: 0 0;
-            height: 106px;
-            margin-top: 36px;
-            width: 4px;
-        }
-
-        .jqc-clock-min span {
-            background: url("assets/lib/clock/minutes.png") no-repeat scroll 0 0 transparent;
-            box-shadow: 0 0;
-            height: 106px;
-            margin-top: 51px;
-            width: 6px;
-        }
-
-        .jqc-clock-hour span {
-            background: url("assets/lib/clock/hours.png") no-repeat scroll 0 0 transparent;
-            box-shadow: 0 0;
-            height: 106px;
-            margin-top: 69px;
-            width: 10px;
-        }
-
     </style>
 
     <script src="assets/lib/mustache.min.js"></script>
@@ -53,8 +19,6 @@
 
     <script type="text/javascript" src="assets/lib/ponies/basecfg.js" id="browser-ponies-config"></script>
     <script type="text/javascript" src="assets/lib/ponies/browserponies.js" id="browser-ponies-script"></script>
-
-    <script type="text/javascript" src="assets/lib/clock/jqClock.js"></script>
 
 </head>
 
@@ -72,12 +36,6 @@
     <div>
         <strong>Total balance</strong>: <span id="total"></span>
     </div>
-</div>
-
-<div>
-    <span id="clock1" class="clock">&nbsp;</span>
-    <span id="clock2" class="clock">&nbsp;</span>
-    <span id="clock3" class="clock">&nbsp;</span>
 </div>
 
 </body>
@@ -108,33 +66,10 @@
             var endDate = new Date();
             if (json.hasOwnProperty("error")) {
                 var error = json.error;
-                if (error.indexOf("#") < 0) {
-                    setTimeout(launchPonies, 3000);
-                }
-                else if ((endDate.getTime() - startDate.getTime()) > 2000) {
-                    setTimeout(showClocks, 3000);
+                if ((endDate.getTime() - startDate.getTime()) > 2000) {
+                    launchPonies();
                 }
             }
-        });
-    }
-
-    function showClocks() {
-        jQuery(function () {
-            jQuery('#clock1').clock({
-                graduations: 0,
-                size: 250,
-                speed: 500
-            });
-            jQuery('#clock2').clock({
-                graduations: 0,
-                size: 250,
-                speed: 2000
-            });
-            jQuery('#clock3').clock({
-                graduations: 0,
-                size: 250,
-                speed: 100
-            });
         });
     }
 
