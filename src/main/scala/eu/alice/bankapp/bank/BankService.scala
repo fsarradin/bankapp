@@ -4,7 +4,8 @@ import eu.alice.bankapp.entity.Account
 import collection.immutable.Iterable
 
 
-class BankService(accountRepository: AccountRepository, ownerAccounts: Map[String, List[String]]) {
+class BankService(accountRepository: AccountRepository,
+                  ownerAccounts: Map[String, List[String]]) {
 
   type Balance = BigDecimal
 
@@ -34,8 +35,8 @@ class BankService(accountRepository: AccountRepository, ownerAccounts: Map[Strin
     s"""{"total": "$total"}"""
   }
 
-
-  def addBalances(balance1: Balance, balance2: Balance): Balance = balance1 + balance2
+  def addBalances(balance1: Balance, balance2: Balance): Balance =
+    balance1 + balance2
 
 }
 
