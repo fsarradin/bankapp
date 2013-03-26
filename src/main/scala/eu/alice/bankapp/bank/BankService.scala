@@ -9,11 +9,9 @@ class BankService(accountRepository: AccountRepository,
 
   type Balance = BigDecimal
 
-  /*
+  /**
    * TOTAL BALANCE
-   *
    */
-
   def totalBalance: String = {
     // get all balances
     val balances: Iterable[Balance] =

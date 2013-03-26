@@ -23,7 +23,6 @@ class AccountRepository(bankProxies: Map[String, BankProxy]) {
   def getAccountByNumber(bankProxy: BankProxy, accountNumber: String): Account =
   {
     val account: Account = bankProxy.getAccountByNumber(accountNumber)
-
     if (account == null)
       throw new BankException(s"unknown account number $accountNumber")
     else
