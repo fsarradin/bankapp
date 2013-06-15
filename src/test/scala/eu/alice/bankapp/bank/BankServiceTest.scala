@@ -1,12 +1,13 @@
 package eu.alice.bankapp.bank
 
-import org.specs2.mutable.Specification
 import eu.alice.bankapp.entity.Account
 import concurrent.{Await, Future, future}
 import concurrent.duration._
 import concurrent.ExecutionContext.Implicits.global
+import org.scalatest.FlatSpec
+import org.scalatest.matchers.MustMatchers._
 
-class BankServiceTest extends Specification {
+class BankServiceTest extends FlatSpec {
 
   val bankService: BankService = BankService(
     Map(
@@ -20,22 +21,19 @@ class BankServiceTest extends Specification {
 
   implicit def stringToFuture(s: String): Future[String] = future(s)
 
-  "a bank" should {
+  "a bank" should "get total balance" in {
+    val jsonFuture: Future[String] = bankService.totalBalance
+    Await.ready(jsonFuture, 5000 milli)
 
-    "get total balance" in {
-      val jsonFuture: Future[String] = bankService.totalBalance
-      Await.ready(jsonFuture, 5000 milli)
+    val json: String = jsonFuture.value.get.get
 
-      val json: String = jsonFuture.value.get.get
+    json must include ("total")
+    json must include ("1000")
 
-      json must contain("total")
-      json must contain("1000")
-      json must not contain ("error")
-      json must not contain ("Some")
-      json must not contain ("Try")
-      json must not contain ("Future")
-    }
-
+    json must not (include ("error"))
+    json must not (include ("Some"))
+    json must not (include ("Try"))
+    json must not (include ("Future"))
   }
 
 }
